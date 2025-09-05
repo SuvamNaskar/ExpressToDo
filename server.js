@@ -3,6 +3,9 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 const TodoModel = require('./models/Task');
+const connectDB = require('./mongo_connect');
+
+connectDB();
 
 const app = express();
 
@@ -10,17 +13,6 @@ const app = express();
 app.use(cors());
 app.use(express.json()); // Allows us to parse JSON in the request body
 app.use(express.static('public'));
-
-// --- Database Connection ---
-const mongoURI = process.env.mongoURI; // Replace with your MongoDB Atlas URI if you're using it
-mongoose.connect(mongoURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => {
-  console.log('MongoDB connected successfully! ✅');
-}).catch(err => {
-  console.error('MongoDB connection error:', err);
-});
 
 const Todo = TodoModel;
 
