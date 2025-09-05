@@ -1,11 +1,8 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
-const TodoModel = require('./models/Task');
-const connectDB = require('./mongo_connect');
+const todoRoutes = require('./routes/Todos');
 
-connectDB();
 
 const app = express();
 
@@ -14,65 +11,7 @@ app.use(cors());
 app.use(express.json()); // Allows us to parse JSON in the request body
 app.use(express.static('public'));
 
-const Todo = TodoModel;
-
-// --- API Routes ---
-
-// GET all todos
-app.get('/todos', async (req, res) => {
-  try {
-    const todos = await Todo.find().sort({ createdAt: -1 });
-    res.json(todos);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// POST a new todo
-app.post('/todos', async (req, res) => {
-  const todo = new Todo({
-    text: req.body.text
-  });
-
-  try {
-    const newTodo = await todo.save();
-    res.status(201).json(newTodo);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-});
-
-// PUT (update) a todo
-app.put('/todos/:id', async (req, res) => {
-  try {
-    const todo = await Todo.findById(req.params.id);
-    if (todo == null) {
-      return res.status(404).json({ message: 'Cannot find todo' });
-    }
-    // Toggle the completed status
-    todo.completed = !todo.completed;
-    const updatedTodo = await todo.save();
-    res.json(updatedTodo);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-
-// DELETE a todo
-app.delete('/todos/:id', async (req, res) => {
-  try {
-    const todo = await Todo.findById(req.params.id);
-    if (todo == null) {
-      return res.status(404).json({ message: 'Cannot find todo' });
-    }
-    await todo.deleteOne();
-    res.json({ message: 'Deleted Todo' });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
+app.use('/todos', todoRoutes);
 
 // --- Start the Server ---
 const PORT = 5000;
