@@ -1,26 +1,10 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
 require('dotenv').config();
 const TodoModel = require('../models/Task');
-const connectDB = require('../mongo_connect');
 
 const router = express.Router();
 
-connectDB();
 const Todo = TodoModel;
-
-// --- API Routes ---
-
-// GET all todos
-router.get('/', async (req, res) => {
-  try {
-    const todos = await Todo.find().sort({ createdAt: -1 });
-    res.json(todos);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
 
 // POST a new todo
 router.post('/', async (req, res) => {
@@ -30,38 +14,49 @@ router.post('/', async (req, res) => {
 
   try {
     const newTodo = await todo.save();
-    res.status(201).json(newTodo);
+    // Check if the request was from fetch (AJAX)
+    if (req.header('X-Requested-With') === 'XMLHttpRequest') {
+      res.status(201).json(newTodo);
+    } else {
+      res.redirect('/');
+    }
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
 
-// PUT (update) a todo
-router.put('/:id', async (req, res) => {
+// POST to toggle a todo's completed status
+router.post('/toggle/:id', async (req, res) => {
   try {
     const todo = await Todo.findById(req.params.id);
     if (todo == null) {
       return res.status(404).json({ message: 'Cannot find todo' });
     }
-    // Toggle the completed status
     todo.completed = !todo.completed;
-    const updatedTodo = await todo.save();
-    res.json(updatedTodo);
+    await todo.save();
+    if (req.header('X-Requested-With') === 'XMLHttpRequest') {
+      res.status(200).json(todo);
+    } else {
+      res.redirect('/');
+    }
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-
-// DELETE a todo
-router.delete('/:id', async (req, res) => {
+// POST to delete a todo
+router.post('/delete/:id', async (req, res) => {
   try {
     const todo = await Todo.findById(req.params.id);
     if (todo == null) {
       return res.status(404).json({ message: 'Cannot find todo' });
     }
     await todo.deleteOne();
-    res.json({ message: 'Deleted Todo' });
+    if (req.header('X-Requested-With') === 'XMLHttpRequest') {
+      res.status(200).json({ message: 'Deleted Todo' });
+    } else {
+      res.redirect('/');
+    }
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
