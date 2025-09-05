@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
+const TodoModel = require('./models/Task');
 
 const app = express();
 
@@ -21,23 +22,7 @@ mongoose.connect(mongoURI, {
   console.error('MongoDB connection error:', err);
 });
 
-// --- Mongoose Schema and Model ---
-const todoSchema = new mongoose.Schema({
-  text: {
-    type: String,
-    required: true
-  },
-  completed: {
-    type: Boolean,
-    default: false
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
-});
-
-const Todo = mongoose.model('Todo', todoSchema);
+const Todo = TodoModel;
 
 // --- API Routes ---
 
