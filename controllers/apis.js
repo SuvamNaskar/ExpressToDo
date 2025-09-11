@@ -1,4 +1,3 @@
-const express = require('express');
 const TodoModel = require('../models/Task');
 require('dotenv').config();
 
