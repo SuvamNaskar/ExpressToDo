@@ -4,6 +4,7 @@ require('dotenv').config();
 const connectDB = require('./mongo_connect');
 const todoRoutes = require('./routes/Todos');
 const homeRoute = require('./routes/home');
+const apiRoutes = require('./routes/apis');
 
 
 const app = express();
@@ -22,6 +23,7 @@ app.set('view engine', 'ejs');
 
 app.use('/', homeRoute);
 app.use('/todos', todoRoutes);
+app.use('/api', apiRoutes);
 
 // --- Start the Server ---
 const PORT = 5000;
