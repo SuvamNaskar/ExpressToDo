@@ -1,24 +1,18 @@
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const { handleSignupUi, handleSignup } = require('../controllers/home');
-const TodoModel = require('../models/Task');
+const { handleSignupUi,
+        handleSignup,
+        handleLoginUi,
+        handleLogin,
+        handleHome } = require('../controllers/home');
 
-const Todo = TodoModel;
-
-
-// GET all todos and render the index page
-router.get('/', async (req, res) => {
-  try {
-    const todos = await Todo.find().sort({ createdAt: -1 });
-    res.render('index', { todos: todos });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+router.get('/', handleHome)
 
 router.get('/signup', handleSignupUi)
-
 router.post('/signup', handleSignup )
+
+router.get('/login', handleLoginUi)
+router.post('/login', handleLogin )
 
 module.exports = router;
