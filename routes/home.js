@@ -5,7 +5,8 @@ const { handleSignupUi,
         handleSignup,
         handleLoginUi,
         handleLogin,
-        handleHome } = require('../controllers/home');
+        handleHome, 
+        handleLogout} = require('../controllers/home');
 
 router.get('/', handleHome)
 
@@ -14,5 +15,7 @@ router.post('/signup', handleSignup )
 
 router.get('/login', handleLoginUi)
 router.post('/login', handleLogin )
+
+router.get('/logout', handleLogout)
 
 module.exports = router;
