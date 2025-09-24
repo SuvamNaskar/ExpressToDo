@@ -9,7 +9,8 @@ const Todo = TodoModel;
 // POST a new todo
 router.post('/', async (req, res) => {
   const todo = new Todo({
-    text: req.body.text
+    text: req.body.text,
+    user: req.session.user._id
   });
 
   try {
