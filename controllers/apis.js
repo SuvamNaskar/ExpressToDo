@@ -3,8 +3,8 @@ require('dotenv').config();
 
 const Todo = TodoModel;
 
-const getTodos = async () => {
-    return await Todo.find().sort({ createdAt: -1 });
+const getTodos = async (userId) => {
+    return await Todo.find({ user: userId }).sort({ createdAt: -1 });
 }
 
 const handleApiTodos = async (req, res) => {
