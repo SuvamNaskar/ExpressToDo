@@ -5,7 +5,7 @@ const { getTodos } = require('./apis');
 const handleHome = async (req, res) => {
     try {
         const todos = await getTodos();
-        res.render('index', { todos: todos });
+        res.render('index', { todos: todos, user: req.session.user });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -29,7 +29,8 @@ const handleLogin = async (req, res) => {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 
-        res.status(200).json({ message: 'Login successful' });
+        req.session.user = user;
+        res.status(200).redirect('/');
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -65,10 +66,19 @@ const handleSignup = async (req, res) => {
         });
 
         await newUser.save();
-        res.status(201).json({ message: 'User created successfully' });
+        res.status(201).redirect('/login');
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 }
 
-module.exports = { handleSignupUi, handleSignup, handleLoginUi, handleLogin, handleHome };
+const handleLogout = (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            return res.status(500).json({ message: 'Could not log out, please try again.' });
+        }
+        res.redirect('/login');
+    });
+}
+
+module.exports = { handleSignupUi, handleSignup, handleLoginUi, handleLogin, handleHome, handleLogout };
