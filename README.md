@@ -1,44 +1,62 @@
 # ExpressToDo
 
-A simple ToDo application built with Express.js.
+A simple ToDo application built with Express.js, featuring user authentication.
 
 ## Features
 
+*   User registration and authentication.
 *   Create, Read, Update, and Delete tasks.
-*   Simple and intuitive UI.
+*   A clean and intuitive user interface.
+*   A secure API for fetching ToDo items.
 
 ## Getting Started
 
 1.  Clone the repository.
 2.  Install dependencies: `npm install`
-3.  Start the server: `npm run dev`
+3.  Create a `.env` file in the root directory and add the following environment variables:
+    ```
+    mongoURI=<YOUR_MONGODB_CONNECTION_STRING>
+    API_KEY=<YOUR_API_KEY>
+    ```
+4.  Start the server: `npm run dev`
 
 ## Project Overview
 
-The application allows users to create, view, and delete tasks. It uses a MongoDB database to store the tasks and EJS as a template engine to render the frontend.
+The application allows users to sign up, manage their ToDo lists, and interact with a secure API. It uses a MongoDB database to store user and task data and EJS as a template engine to render the frontend.
 
 ## API Endpoints
 
 The application exposes the following endpoints:
 
 *   `GET /`: Renders the main page with a list of all ToDo items.
+*   `GET /signup`: Renders the user registration page.
+*   `POST /signup`: Creates a new user account.
+    *   **Request body**: `{ "username": "your_username", "email": "your_email", "password": "your_password" }`
 *   `POST /todos`: Creates a new ToDo item.
     *   **Request body**: `{ "text": "Your task description" }`
 *   `POST /todos/toggle/:id`: Toggles the completion status of a ToDo item.
 *   `POST /todos/delete/:id`: Deletes a ToDo item.
+*   `GET /api/todos`: Retrieves a list of all ToDo items.
+    *   **Headers**: Requires an `apikey` header for authentication.
 
 ## Database
 
 *   **Database:** MongoDB
 *   **Connection:** The connection to the MongoDB database is handled in `mongo_connect.js`. It uses the `mongoose` library and expects a MongoDB connection URI from the `mongoURI` environment variable.
-*   **Schema:** The `Task` model is defined in `models/Task.js` and has the following schema:
-    *   `text`: String (required) - The description of the task.
-    *   `completed`: Boolean (default: `false`) - The completion status of the task.
-    *   `createdAt`: Date (default: `Date.now`) - The timestamp of when the task was created.
+*   **Schemas:**
+    *   The `Task` model is defined in `models/Task.js` with the following schema:
+        *   `text`: String (required) - The description of the task.
+        *   `completed`: Boolean (default: `false`) - The completion status of the task.
+        *   `createdAt`: Date (default: `Date.now`) - The timestamp of when the task was created.
+    *   The `User` model is defined in `models/Users.js` with the following schema:
+        *   `username`: String (required, unique) - The user's username.
+        *   `email`: String (required, unique) - The user's email address.
+        *   `passwordHash`: String (required) - The hashed password of the user.
+        *   `createdAt`: Date (default: `Date.now`) - The timestamp of when the user account was created.
 
 ## Frontend
 
-*   **Templating:** The application uses EJS (`.ejs`) as its view engine, with the main view being `views/index.ejs`.
+*   **Templating:** The application uses EJS (`.ejs`) as its view engine, with the main views being `views/index.ejs` and `views/signup.ejs`.
 *   **Styling:** The frontend is styled with a single CSS file located at `public/style.css`.
 *   **Client-side Scripting:** Client-side interactions are handled by `public/script.js`. It uses `fetch` to make AJAX requests to the API endpoints for creating, toggling, and deleting tasks without a full page reload.
 
@@ -46,6 +64,7 @@ The application exposes the following endpoints:
 
 The project relies on the following npm packages:
 
+*   `bcrypt`: For hashing user passwords.
 *   `cors`: To enable Cross-Origin Resource Sharing.
 *   `dotenv`: To manage environment variables.
 *   `ejs`: As the template engine.

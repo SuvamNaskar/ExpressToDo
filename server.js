@@ -18,6 +18,13 @@ app.use(express.json()); // Allows us to parse JSON in the request body
 app.use(express.urlencoded({ extended: true })); // Allows us to parse URL-encoded form data
 app.use(express.static('public'));
 
+const session = require('express-session');
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'a_default_secret',
+    resave: false,
+    saveUninitialized: false,
+}));
+
 // Set view engine
 app.set('view engine', 'ejs');
 

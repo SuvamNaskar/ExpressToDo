@@ -21,7 +21,7 @@ body {
     justify-content: center;
     align-items: flex-start;
     min-height: 100vh;
-    padding-top: 50px;
+    padding-top: 80px;
 }
 
 .container {
@@ -37,6 +37,23 @@ header h1 {
     text-align: center;
     margin-bottom: 20px;
     color: var(--accent-color);
+}
+
+.btn {
+    display: block;
+    width: 100px;
+    margin: 0 auto 20px;
+    padding: 10px;
+    text-align: center;
+    background-color: var(--accent-color);
+    color: white;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #d83a56;
 }
 
 #todo-form {
@@ -113,6 +130,171 @@ header h1 {
     transition: color 0.3s;
 }
 
+}
+
 .todo-item button:hover {
+    color: var(--accent-color);
+}
+
+#signup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#signup-form .form-group {
+    margin-bottom: 15px;
+}
+
+#signup-form label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-color);
+    font-weight: 600;
+}
+#signup-form input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--secondary-color);
+    border-radius: var(--border-radius);
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+#signup-form input::placeholder {
+    color: #888;
+}
+
+#signup-form input:focus {
+    border-color: var(--accent-color);
+}
+
+#signup-form button {
+    padding: 12px;
+    font-size: 18px;
+    border: none;
+    background-color: var(--accent-color);
+    color: white;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#signup-form button:hover {
+    background-color: #d83a56;
+}
+
+#login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#login-form input {
+    padding: 12px;
+    border: 2px solid var(--secondary-color);
+    border-radius: var(--border-radius);
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+#login-form input::placeholder {
+    color: #888;
+}
+
+#login-form input:focus {
+    border-color: var(--accent-color);
+}
+
+#login-form button {
+    padding: 12px;
+    font-size: 18px;
+    border: none;
+    background-color: var(--accent-color);
+    color: white;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#login-form button:hover {
+    background-color: #d83a56;
+}
+
+main p {
+    text-align: center;
+    margin-top: 20px;
+}
+
+main p a {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+main p a:hover {
+    text-decoration: underline;
+}
+
+main p {
+    text-align: center;
+    margin-top: 20px;
+}
+
+main p a {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+main p a:hover {
+    text-decoration: underline;
+}
+
+.navbar {
+    width: 100%;
+    background-color: var(--primary-color);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 15px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.navbar-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand-logo {
+    color: var(--accent-color);
+    font-size: 24px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.navbar-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.navbar-links a {
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+
+.navbar-links a:hover {
     color: var(--accent-color);
 }
