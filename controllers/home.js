@@ -4,7 +4,7 @@ const { getTodos } = require('./apis');
 
 const handleHome = async (req, res) => {
     try {
-        const todos = await getTodos();
+        const todos = await getTodos(req.session.user._id);
         res.render('index', { todos: todos, user: req.session.user });
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -81,4 +81,11 @@ const handleLogout = (req, res) => {
     });
 }
 
-module.exports = { handleSignupUi, handleSignup, handleLoginUi, handleLogin, handleHome, handleLogout };
+const ensureAuthenticated = (req, res, next) => {
+    if (req.session.user) {
+        return next();
+    }
+    res.redirect('/login');
+}
+
+module.exports = { handleSignupUi, handleSignup, handleLoginUi, handleLogin, handleHome, handleLogout, ensureAuthenticated };
