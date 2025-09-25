@@ -8,14 +8,11 @@ const getTodos = async (userId) => {
 }
 
 const handleApiTodos = async (req, res) => {
-    const { apikey } = req.headers;
-
-    if (apikey !== process.env.API_KEY) {
-        return res.status(403).json({ message: 'Forbidden' });
+    if (!req.session.user) {
+        return res.status(401).json({ message: 'Unauthorized' });
     }
-
     try {
-        const todos = await getTodos();
+        const todos = await getTodos(req.session.user._id);
         res.status(200).json(todos);
     } catch (err) {
         res.status(500).json({ message: err.message });

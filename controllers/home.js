@@ -3,11 +3,15 @@ const bcrypt = require('bcrypt');
 const { getTodos } = require('./apis');
 
 const handleHome = async (req, res) => {
-    try {
-        const todos = await getTodos(req.session.user._id);
-        res.render('index', { todos: todos, user: req.session.user });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
+    if (req.session.user) {
+        try {
+            const todos = await getTodos(req.session.user._id);
+            res.render('home', { todos: todos, user: req.session.user });
+        } catch (err) {
+            res.status(500).json({ message: err.message });
+        }
+    } else {
+        res.render('index', { user: null });
     }
 }
 
