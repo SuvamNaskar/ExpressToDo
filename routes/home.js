@@ -9,7 +9,7 @@ const { handleSignupUi,
         handleLogout,
         ensureAuthenticated} = require('../controllers/home');
 
-router.get('/', ensureAuthenticated, handleHome)
+router.get('/', handleHome);
 
 router.get('/signup', handleSignupUi)
 router.post('/signup', handleSignup )
