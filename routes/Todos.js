@@ -2,15 +2,17 @@ const express = require('express');
 require('dotenv').config();
 const TodoModel = require('../models/Task');
 
+const { ensureAuthenticated } = require('../controllers/home');
+
 const router = express.Router();
 
 const Todo = TodoModel;
 
 // POST a new todo
-router.post('/', async (req, res) => {
+router.post('/', ensureAuthenticated, async (req, res) => {
   const todo = new Todo({
     text: req.body.text,
-    user: req.session.user._id
+    user: req.user._id
   });
 
   try {
