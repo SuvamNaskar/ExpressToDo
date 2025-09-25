@@ -8,11 +8,11 @@ const getTodos = async (userId) => {
 }
 
 const handleApiTodos = async (req, res) => {
-    if (!req.session.user) {
+    if (!req.user) {
         return res.status(401).json({ message: 'Unauthorized' });
     }
     try {
-        const todos = await getTodos(req.session.user._id);
+        const todos = await getTodos(req.user._id);
         res.status(200).json(todos);
     } catch (err) {
         res.status(500).json({ message: err.message });

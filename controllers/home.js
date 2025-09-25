@@ -1,12 +1,16 @@
 const User = require('../models/Users');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const { getTodos } = require('./apis');
+require('dotenv').config();
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const handleHome = async (req, res) => {
-    if (req.session.user) {
+    if (req.user) {
         try {
-            const todos = await getTodos(req.session.user._id);
-            res.render('home', { todos: todos, user: req.session.user });
+            const todos = await getTodos(req.user._id);
+            res.render('home', { todos: todos, user: req.user });
         } catch (err) {
             res.status(500).json({ message: err.message });
         }
@@ -33,7 +37,8 @@ const handleLogin = async (req, res) => {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 
-        req.session.user = user;
+        const token = jwt.sign({ user: { _id: user._id, email: user.email, username: user.username } }, JWT_SECRET, { expiresIn: '1h' });
+        res.cookie('token', token, { httpOnly: true });
         res.status(200).redirect('/');
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -77,19 +82,24 @@ const handleSignup = async (req, res) => {
 }
 
 const handleLogout = (req, res) => {
-    req.session.destroy(err => {
-        if (err) {
-            return res.status(500).json({ message: 'Could not log out, please try again.' });
-        }
-        res.redirect('/login');
-    });
+    res.clearCookie('token');
+    res.redirect('/login');
 }
 
 const ensureAuthenticated = (req, res, next) => {
-    if (req.session.user) {
-        return next();
+    const token = req.cookies.token;
+    if (!token) {
+        return res.redirect('/login');
     }
-    res.redirect('/login');
+
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        req.user = decoded.user;
+        next();
+    } catch (err) {
+        res.clearCookie('token');
+        return res.redirect('/login');
+    }
 }
 
 module.exports = { handleSignupUi, handleSignup, handleLoginUi, handleLogin, handleHome, handleLogout, ensureAuthenticated };
