@@ -3,12 +3,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const todoInput = document.getElementById('todo-input');
     const todoList = document.getElementById('todo-list');
 
-    const API_URL = 'http://localhost:5000/todos';
+    const TODOS_API_URL = '/todos';
+    const API_TODOS_URL = '/api/todos';
 
     // --- Fetch and Display Todos ---
     const fetchTodos = async () => {
         try {
-            const response = await fetch(API_URL);
+            const response = await fetch(API_TODOS_URL, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
             const todos = await response.json();
             todoList.innerHTML = ''; // Clear the list before rendering
             todos.forEach(todo => {
@@ -29,14 +34,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const span = document.createElement('span');
+        span.className = 'todo-text';
         span.textContent = todo.text;
-        span.addEventListener('click', () => toggleComplete(todo._id));
+
+        const toggleButton = document.createElement('button');
+        toggleButton.className = 'toggle-btn';
+        toggleButton.textContent = '✓';
+        toggleButton.addEventListener('click', () => toggleComplete(todo._id));
 
         const deleteButton = document.createElement('button');
+        deleteButton.className = 'delete-btn';
         deleteButton.textContent = '×';
         deleteButton.addEventListener('click', () => deleteTodo(todo._id));
 
         li.appendChild(span);
+        li.appendChild(toggleButton);
         li.appendChild(deleteButton);
         todoList.appendChild(li);
     };
@@ -48,9 +60,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (text === '') return;
 
         try {
-            const response = await fetch(API_URL, {
+            const response = await fetch(TODOS_API_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
                 body: JSON.stringify({ text }),
             });
             const newTodo = await response.json();
@@ -64,12 +79,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Toggle complete status ---
     const toggleComplete = async (id) => {
         try {
-            await fetch(`${API_URL}/${id}`, {
-                method: 'PUT',
+            const response = await fetch(`${TODOS_API_URL}/toggle/${id}`, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
             });
+            const updatedTodo = await response.json();
             // Visually update the item
             const todoItem = document.querySelector(`[data-id="${id}"]`);
-            todoItem.classList.toggle('completed');
+            if (updatedTodo.completed) {
+                todoItem.classList.add('completed');
+            } else {
+                todoItem.classList.remove('completed');
+            }
         } catch (error) {
             console.error('Error updating todo:', error);
         }
@@ -78,8 +101,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Delete a todo ---
     const deleteTodo = async (id) => {
         try {
-            await fetch(`${API_URL}/${id}`, {
-                method: 'DELETE',
+            await fetch(`${TODOS_API_URL}/delete/${id}`, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
             });
             // Remove item from the UI
             const todoItem = document.querySelector(`[data-id="${id}"]`);
@@ -88,7 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error deleting todo:', error);
         }
     };
-
 
     // Initial fetch of todos when the page loads
     fetchTodos();
